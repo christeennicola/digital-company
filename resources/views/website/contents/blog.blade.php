@@ -89,7 +89,7 @@
 
                                                     <p
                                                         style="font-size: 15px; color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-bottom: 30px; padding: 0 10px; font-weight: 400;">
-                                                        {{ Str::limit($blog->description, 140, '...') }}
+                                                        {{ $blog->content }}
                                                     </p>
                                                 </div>
 
