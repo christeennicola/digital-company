@@ -59,8 +59,10 @@
                          </li>
                          <li class="scroll-to-section"><a href="{{ route('blog') }}">{{ __('messages.blog') }}</a>
                          </li>
-                         <li class="scroll-to-section"><a
-                                 href="{{ route('message') }}">{{ __('messages.message_us') }}</a></li>
+                         @if (!auth()->check() || auth()->user()->role !== 'admin')
+                             <li class="scroll-to-section"><a
+                                     href="{{ route('message') }}">{{ __('messages.message_us') }}</a></li>
+                         @endif
                          <li class="nav-item dropdown scroll-to-section">
                              <div class="dropdown">
                                  <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
