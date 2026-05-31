@@ -379,7 +379,6 @@
 
             <form action="{{ route('login') }}" method="POST">
                 @csrf
-
                 <div class="text-start">
                     <div class="input-group-custom">
                         <div class="text-start mb-4">

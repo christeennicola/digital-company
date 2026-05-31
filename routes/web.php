@@ -42,6 +42,7 @@ Route::get('/message', [WebsiteController::class, 'message'])->name('message');
 
 /* Start Admin and Dashboard Controller */
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::resource('/dash', AdminController::class);
     Route::resource('/service', ServiceController::class);
     Route::resource('/porto', PortoController::class);
     Route::resource('/blog', BlogController::class);
@@ -59,9 +60,7 @@ Route::middleware(['auth'])->group(function () {
 /* End User Controller */
 
 /* Start Dashbard Routes */
-Route::middleware(['auth'])->group(function () {
-    Route::resource('/dash', AdminController::class);
-});
+Route::redirect('/dash', '/admin/dash');
 /* End Dashboard Routes */
 
 /* Start Language Routes */
