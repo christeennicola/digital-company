@@ -68,6 +68,10 @@
                 padding: 12px;
                 margin-left: 5px;
             }
+
+            table tr th {
+                background-color: #042baa;
+            }
         </style>
     </head>
 
