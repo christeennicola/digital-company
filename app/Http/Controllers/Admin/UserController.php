@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -55,9 +56,12 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        //dd($request->all())
         $dataToupdate['name'] = $request->name;
         $dataToupdate['email'] = $request->email;
-        $dataToupdate['password'] = $request->password;
+        if ($request->filled('password')) {
+            $dataToupdate['password'] = Hash::make($request->password);
+        }
         User::query()->where('id', '=', $id)->update($dataToupdate);
         return redirect()->route('user.index');
     }

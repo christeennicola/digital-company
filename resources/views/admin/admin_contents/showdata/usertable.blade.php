@@ -29,7 +29,7 @@
                             <td>{{ $info->role }}</td>
                             <td class="align-middle text-center" style="white-space: nowrap; width: 150px;">
                                 <div class="d-flex justify-content-center align-items-center gap-2">
-                                    @if ($info->id === Auth::user()->id)
+                                    @if ($info->role === 'admin')
                                         <a href="{{ route('user.edit', $info->id) }}" class="button">
                                             Update
                                         </a>

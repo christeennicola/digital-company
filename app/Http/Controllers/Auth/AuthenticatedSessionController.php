@@ -24,29 +24,43 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // 1. التحقق من الحقول القادمة من الفورم بما فيها أزرار الـ role
-        $credentials = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-            'role' => ['nullable', 'string', 'in:user,admin'],
-        ]);
+        // 1. جلب المستخدم من قاعدة البيانات بناءً على البريد المدخل قبل تسجيل الدخول
+        $user = \App\Models\User::where('email', $request->email)->first();
 
-        // 2. محاولة تسجيل الدخول بناءً على الإيميل، الباسورد، والرتبة المختارة معاً
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-
-            // 3. التوجيه الذكي بعد نجاح الدخول
-            $user = \Illuminate\Support\Facades\Auth::user();
-            if ($user && $user->role === 'admin') {
-                return redirect()->intended('/admin/dash'); // لوحة تحكم الأدمن
+        if ($user) {
+            // الحالة الأولى: إذا كان حسابه أدمن في القاعدة، واختار في الواجهة user
+            if ($user->role === 'admin' && $request->role === 'user') {
+                return redirect()->route('login')
+                    ->withInput($request->only('email', 'role'))
+                    ->withErrors([
+                        'email' => 'Sorry You Are Not Allow To Enter'
+                    ]);
             }
-            return redirect('/home'); // صفحة المستخدم العادي
+
+            // الحالة الثانية: إذا كان حسابه عادي في القاعدة، واختار في الواجهة admin
+            if ($user->role !== 'admin' && $request->role === 'admin') {
+                return redirect()->route('login')
+                    ->withInput($request->only('email', 'role'))
+                    ->withErrors([
+                        'email' => 'Sorry You Are Not Allow To Enter'
+                    ]);
+            }
         }
 
-        // في حال فشل الدخول أو عدم تطابق الرتبة مع الإيميل
-        return back()->withErrors([
-            'email' => 'بيانات الاعتماد المدخلة أو نوع الحساب غير متطابق مع سجلاتنا.',
-        ])->onlyInput('email');
+        // 2. إذا كانت الخيارات متطابقة وسليمة، نسمح له بالتحقق من كلمة المرور وتسجيل الدخول
+        $request->authenticate();
+
+        // 3. تجديد الجلسة للأمان
+        $request->session()->regenerate();
+
+        // 4. التوجيه النهائي بعد النجاح
+        if ($request->user()->role === 'admin') {
+            return redirect()->intended(route('dash.index'))
+                ->with('login_success', 'Welcome In Admin Panel');
+        }
+
+        return redirect()->intended('/')
+            ->with('login_success', 'You are logged in!');
     }
 
     /**

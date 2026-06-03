@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-/* Start Website Controller */
+/* Start Website Routes */
 Route::get('/home', [WebsiteController::class, 'index'])->name('home');
 Route::get('/', [WebsiteController::class, 'index']);
 Route::get('/about', [WebsiteController::class, 'about'])->name('about');
@@ -38,9 +38,9 @@ Route::get('/service', [WebsiteController::class, 'service'])->name('service');
 Route::get('/blog', [WebsiteController::class, 'blog'])->name('blog');
 Route::get('/porto', [WebsiteController::class, 'porto'])->name('porto');
 Route::get('/message', [WebsiteController::class, 'message'])->name('message');
-/* End Website Controller */
+/* End Website Routes */
 
-/* Start Admin and Dashboard Controller */
+/* Start Admin and Dashboard Routes */
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('/dash', AdminController::class);
     Route::resource('/service', ServiceController::class);
@@ -49,15 +49,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('/message', MessageController::class);
     Route::resource('/user', UserController::class);
 });
-/* End Admin and Dashboard Controller
+/* End Admin and Dashboard Routes
 
-/* Start User Controller */
+/* Start User Routes */
 Route::middleware(['auth'])->group(function () {
     Route::resource('user-contact', UserContactController::class)->names([
         'destroy' => 'user-contact-destroy',
     ]);
 });
-/* End User Controller */
+/* End User Routes */
 
 /* Start Dashbard Routes */
 Route::redirect('/dash', '/admin/dash');
